@@ -1,0 +1,590 @@
+/**
+ * HTML Generator Service
+ *
+ * Generates the landing page HTML for GitHub Pages.
+ * Provides a dynamic explorer interface for browsing collected data.
+ */
+
+/**
+ * Generates landing page HTML
+ */
+export class HTMLGenerator {
+  /**
+   * Build a landing page that dynamically loads and displays device data
+   */
+  generateLandingPage(): string {
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Telraam Data Explorer - Karlsruhe</title>
+  <style>
+    ${this.getStyles()}
+  </style>
+</head>
+<body>
+  <div class="container">
+    ${this.getHeader()}
+    ${this.getStatsSection()}
+    ${this.getSearchBox()}
+    <div id="devices" class="devices-grid"></div>
+    ${this.getFooter()}
+  </div>
+  <script>
+    ${this.getScript()}
+  </script>
+</body>
+</html>`;
+  }
+
+  private getStyles(): string {
+    return `
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --surface-hover: #334155;
+      --border: #334155;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --success: #10b981;
+      --radius: 12px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 40px;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 16px;
+    }
+
+    .stats {
+      display: flex;
+      gap: 24px;
+      margin: 24px 0;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      background: var(--surface);
+      padding: 16px 20px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+
+    .stat-label {
+      color: var(--text-muted);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .devices-grid {
+      display: grid;
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+
+    .device-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      transition: all 0.2s ease;
+    }
+
+    .device-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(59, 130, 246, 0.15);
+    }
+
+    .device-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 20px;
+      gap: 16px;
+    }
+
+    .device-info h2 {
+      font-size: 20px;
+      margin-bottom: 4px;
+      color: var(--text);
+    }
+
+    .device-id {
+      color: var(--text-muted);
+      font-size: 14px;
+      font-family: 'Monaco', monospace;
+    }
+
+    .device-meta {
+      text-align: right;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .data-sections {
+      display: grid;
+      gap: 16px;
+    }
+
+    .data-section {
+      background: rgba(59, 130, 246, 0.05);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .file-count {
+      font-size: 12px;
+      color: var(--text-muted);
+      background: rgba(59, 130, 246, 0.1);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .file-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 8px;
+    }
+
+    .file-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      text-decoration: none;
+      color: var(--text);
+      font-size: 13px;
+      font-family: 'Monaco', monospace;
+      transition: all 0.15s ease;
+      text-align: center;
+    }
+
+    .file-link:hover {
+      background: var(--surface-hover);
+      border-color: var(--accent);
+      transform: scale(1.05);
+    }
+
+    .search-box {
+      width: 100%;
+      max-width: 500px;
+      padding: 14px 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-size: 15px;
+      margin-bottom: 32px;
+      transition: all 0.2s ease;
+    }
+
+    .search-box:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .search-box::placeholder {
+      color: var(--text-muted);
+    }
+
+    footer {
+      margin-top: 60px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .file-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      }
+
+      .stats {
+        gap: 12px;
+      }
+
+      .stat {
+        flex: 1;
+        min-width: 140px;
+      }
+    }
+    `;
+  }
+
+  private getHeader(): string {
+    return `
+    <header>
+      <h1>Telraam Data Explorer</h1>
+      <p class="subtitle">Traffic monitoring data from Karlsruhe, Germany</p>
+    </header>
+    `;
+  }
+
+  private getStatsSection(): string {
+    return `
+    <div id="stats" class="stats">
+      <div class="stat">
+        <div class="stat-label">Devices</div>
+        <div class="stat-value" id="deviceCount">-</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Total Files</div>
+        <div class="stat-value" id="fileCount">-</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Last Updated</div>
+        <div class="stat-value" id="lastUpdate" style="font-size: 16px;">-</div>
+      </div>
+    </div>
+    `;
+  }
+
+  private getSearchBox(): string {
+    return `
+    <input
+      type="search"
+      id="search"
+      class="search-box"
+      placeholder="Search devices or filter by month (e.g., 2025-12)..."
+    />
+    `;
+  }
+
+  private getFooter(): string {
+    return `
+    <footer>
+      <p>
+        Data collected via <a href="https://telraam.net" target="_blank">Telraam API</a> •
+        <a href="https://github.com/maxliesegang/telraam-data-collector" target="_blank">View on GitHub</a>
+      </p>
+      <p style="margin-top: 8px; font-size: 12px;">
+        Data licensed under CC BY-NC • Auto-updated daily
+      </p>
+    </footer>
+    `;
+  }
+
+  private getScript(): string {
+    return `
+    const API_BASE = 'data';
+
+    async function loadData() {
+      try {
+        const devicesResponse = await fetch(\`\${API_BASE}/devices.json\`);
+        const devices = await devicesResponse.json();
+
+        const fileStructure = await buildFileStructure(devices);
+        updateStats(devices, fileStructure);
+        renderDevices(devices, fileStructure);
+        setupSearch();
+
+      } catch (error) {
+        console.error('Failed to load data:', error);
+        document.getElementById('devices').innerHTML = \`
+          <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+            Failed to load data. Please check the console for details.
+          </div>
+        \`;
+      }
+    }
+
+    async function buildFileStructure(devices) {
+      const structure = {};
+
+      for (const device of devices) {
+        structure[device.id] = {
+          hourly: [],
+          daily: []
+        };
+
+        const months = generateMonthsList();
+
+        for (const month of months) {
+          const hourlyPath = \`\${API_BASE}/device_\${device.id}/hourly/\${month}.json\`;
+          if (await fileExists(hourlyPath)) {
+            structure[device.id].hourly.push(month);
+          }
+
+          const dailyPath = \`\${API_BASE}/device_\${device.id}/daily/\${month}.json\`;
+          if (await fileExists(dailyPath)) {
+            structure[device.id].daily.push(month);
+          }
+        }
+      }
+
+      return structure;
+    }
+
+    function generateMonthsList() {
+      const months = [];
+      const now = new Date();
+      const startDate = new Date('2025-09-01');
+
+      let current = new Date(startDate);
+      while (current <= now) {
+        const year = current.getFullYear();
+        const month = String(current.getMonth() + 1).padStart(2, '0');
+        months.push(\`\${year}-\${month}\`);
+        current.setMonth(current.getMonth() + 1);
+      }
+
+      return months;
+    }
+
+    async function fileExists(path) {
+      try {
+        const response = await fetch(path, { method: 'HEAD' });
+        return response.ok;
+      } catch {
+        return false;
+      }
+    }
+
+    function updateStats(devices, fileStructure) {
+      const totalFiles = Object.values(fileStructure).reduce((sum, device) => {
+        return sum + device.hourly.length + device.daily.length;
+      }, 0) + 1;
+
+      const lastUpdate = devices.reduce((latest, device) => {
+        const deviceDate = new Date(device.lastUpdated);
+        return deviceDate > latest ? deviceDate : latest;
+      }, new Date(0));
+
+      document.getElementById('deviceCount').textContent = devices.length;
+      document.getElementById('fileCount').textContent = totalFiles;
+      document.getElementById('lastUpdate').textContent = formatDate(lastUpdate);
+    }
+
+    function renderDevices(devices, fileStructure) {
+      const container = document.getElementById('devices');
+      container.innerHTML = '';
+
+      devices.forEach(device => {
+        const files = fileStructure[device.id];
+        const card = createDeviceCard(device, files);
+        container.appendChild(card);
+      });
+    }
+
+    function createDeviceCard(device, files) {
+      const card = document.createElement('div');
+      card.className = 'device-card';
+      card.dataset.deviceId = device.id;
+      card.dataset.deviceName = device.name.toLowerCase();
+
+      const totalDataPoints = device.totalDataPoints || 0;
+      const fileCount = files.hourly.length + files.daily.length;
+
+      card.innerHTML = \`
+        <div class="device-header">
+          <div class="device-info">
+            <h2>\${device.name}</h2>
+            <div class="device-id">ID: \${device.id}</div>
+            <div style="margin-top: 8px; color: var(--text-muted); font-size: 14px;">
+              📍 \${device.location}
+            </div>
+            <div style="margin-top: 8px;">
+              <a
+                href="https://telraam.net/en/location/\${device.id}"
+                target="_blank"
+                rel="noopener noreferrer"
+                style="color: var(--accent); text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; gap: 4px;"
+              >
+                <span>View on Telraam</span>
+                <span style="font-size: 12px;">↗</span>
+              </a>
+            </div>
+          </div>
+          <div class="device-meta">
+            <div><strong>\${totalDataPoints}</strong> data points</div>
+            <div style="margin-top: 4px;">\${fileCount} files</div>
+            <div style="margin-top: 4px; font-size: 12px;">
+              \${formatDate(new Date(device.lastUpdated))}
+            </div>
+          </div>
+        </div>
+
+        <div class="data-sections">
+          \${createDataSection('Hourly Data', files.hourly, device.id, 'hourly')}
+          \${createDataSection('Daily Aggregates', files.daily, device.id, 'daily')}
+        </div>
+      \`;
+
+      return card;
+    }
+
+    function createDataSection(title, months, deviceId, type) {
+      if (months.length === 0) {
+        return \`
+          <div class="data-section">
+            <div class="section-header">
+              <span class="section-title">\${title}</span>
+              <span class="file-count">No data</span>
+            </div>
+          </div>
+        \`;
+      }
+
+      return \`
+        <div class="data-section" data-type="\${type}">
+          <div class="section-header">
+            <span class="section-title">\${title}</span>
+            <span class="file-count">\${months.length} month\${months.length > 1 ? 's' : ''}</span>
+          </div>
+          <div class="file-grid">
+            \${months.map(month => \`
+              <a
+                href="\${API_BASE}/device_\${deviceId}/\${type}/\${month}.json"
+                class="file-link"
+                target="_blank"
+                data-month="\${month}"
+              >
+                \${month}
+              </a>
+            \`).join('')}
+          </div>
+        </div>
+      \`;
+    }
+
+    function formatDate(date) {
+      const now = new Date();
+      const diff = now - date;
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+
+      if (hours < 1) return 'Just now';
+      if (hours < 24) return \`\${hours}h ago\`;
+
+      const days = Math.floor(hours / 24);
+      if (days < 7) return \`\${days}d ago\`;
+
+      return date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
+      });
+    }
+
+    function setupSearch() {
+      const searchInput = document.getElementById('search');
+      const deviceCards = document.querySelectorAll('.device-card');
+
+      searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+
+        deviceCards.forEach(card => {
+          const deviceId = card.dataset.deviceId.toLowerCase();
+          const deviceName = card.dataset.deviceName;
+          const monthLinks = Array.from(card.querySelectorAll('[data-month]'));
+
+          if (!query) {
+            card.classList.remove('hidden');
+            monthLinks.forEach(link => link.parentElement.style.display = '');
+            return;
+          }
+
+          const deviceMatches = deviceId.includes(query) || deviceName.includes(query);
+
+          let hasVisibleMonths = false;
+          monthLinks.forEach(link => {
+            const month = link.dataset.month.toLowerCase();
+            if (month.includes(query)) {
+              link.parentElement.style.display = '';
+              hasVisibleMonths = true;
+            } else {
+              link.parentElement.style.display = 'none';
+            }
+          });
+
+          if (deviceMatches || hasVisibleMonths) {
+            card.classList.remove('hidden');
+          } else {
+            card.classList.add('hidden');
+          }
+        });
+      });
+    }
+
+    loadData();
+    `;
+  }
+}
