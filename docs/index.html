@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Telraam Data Downloads</title>
+    <style>
+      :root {
+        font-family:
+          'Inter',
+          system-ui,
+          -apple-system,
+          sans-serif;
+        color: #0f172a;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      }
+      body {
+        margin: 0;
+        padding: 24px;
+      }
+      .container {
+        max-width: 960px;
+        margin: 0 auto;
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 24px 28px;
+        box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+        border: 1px solid #e2e8f0;
+      }
+      h1 {
+        margin-top: 0;
+        letter-spacing: -0.01em;
+      }
+      p {
+        color: #475569;
+      }
+      .controls {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin: 12px 0 20px;
+      }
+      input[type='search'] {
+        flex: 1;
+        min-width: 240px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        border: 1px solid #cbd5e1;
+        background: #f8fafc;
+        font-size: 14px;
+      }
+      .list {
+        list-style: none;
+        padding-left: 0;
+        display: grid;
+        gap: 8px;
+      }
+      .list a {
+        display: inline-block;
+        padding: 10px 12px;
+        border-radius: 10px;
+        background: #f8fafc;
+        color: #0f172a;
+        text-decoration: none;
+        border: 1px solid #e2e8f0;
+        transition:
+          transform 120ms ease,
+          box-shadow 120ms ease,
+          border-color 120ms ease;
+        word-break: break-all;
+      }
+      .list a:hover {
+        transform: translateY(-1px);
+        border-color: #cbd5e1;
+        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+      }
+      .meta {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin: 12px 0 20px;
+        color: #475569;
+        font-size: 14px;
+      }
+      details {
+        margin-bottom: 12px;
+      }
+      summary {
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 600;
+      }
+      .count {
+        color: #64748b;
+        font-weight: 500;
+        font-size: 13px;
+      }
+      .tag {
+        display: inline-block;
+        margin-left: 8px;
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: #e2e8f0;
+        color: #0f172a;
+        font-size: 12px;
+        vertical-align: middle;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="container">
+      <h1>Telraam Data Downloads</h1>
+      <p>
+        Browse and download the latest collected JSON files. Updated automatically after each
+        collection run.
+      </p>
+      <div class="meta">
+        <span><strong>Files:</strong> 17</span>
+        <span><strong>Last updated:</strong> 2025-12-06T23:06:22.958Z</span>
+      </div>
+      <div class="controls">
+        <input
+          id="filter"
+          type="search"
+          placeholder="Filter by path (e.g. device_9000008311 daily)"
+        />
+      </div>
+      <details open>
+        <summary>Root & metadata <span class="count">(1)</span></summary>
+        <ul class="list">
+          <li data-path="data/devices.json">
+            <a href="data/devices.json">data/devices.json</a><span class="tag">metadata</span>
+          </li>
+        </ul>
+      </details>
+      <details open>
+        <summary>device_9000008311 <span class="count">(8)</span></summary>
+        <ul class="list">
+          <li data-path="data/device_9000008311/2025-09.json">
+            <a href="data/device_9000008311/2025-09.json">data/device_9000008311/2025-09.json</a
+            ><span class="tag">monthly</span>
+          </li>
+          <li data-path="data/device_9000008311/2025-10.json">
+            <a href="data/device_9000008311/2025-10.json">data/device_9000008311/2025-10.json</a
+            ><span class="tag">monthly</span>
+          </li>
+          <li data-path="data/device_9000008311/2025-11.json">
+            <a href="data/device_9000008311/2025-11.json">data/device_9000008311/2025-11.json</a
+            ><span class="tag">monthly</span>
+          </li>
+          <li data-path="data/device_9000008311/2025-12.json">
+            <a href="data/device_9000008311/2025-12.json">data/device_9000008311/2025-12.json</a
+            ><span class="tag">monthly</span>
+          </li>
+          <li data-path="data/device_9000008311/daily/2025-09.json">
+            <a href="data/device_9000008311/daily/2025-09.json"
+              >data/device_9000008311/daily/2025-09.json</a
+            ><span class="tag">daily</span>
+          </li>
+          <li data-path="data/device_9000008311/daily/2025-10.json">
+            <a href="data/device_9000008311/daily/2025-10.json"
+              >data/device_9000008311/daily/2025-10.json</a
+            ><span class="tag">daily</span>
+          </li>
+          <li data-path="data/device_9000008311/daily/2025-11.json">
+            <a href="data/device_9000008311/daily/2025-11.json"
+              >data/device_9000008311/daily/2025-11.json</a
+            ><span class="tag">daily</span>
+          </li>
+          <li data-path="data/device_9000008311/daily/2025-12.json">
+            <a href="data/device_9000008311/daily/2025-12.json"
+              >data/device_9000008311/daily/2025-12.json</a
+            ><span class="tag">daily</span>
+          </li>
+        </ul>
+      </details>
+      <details open>
+        <summary>device_9000008322 <span class="count">(8)</span></summary>
+        <ul class="list">
+          <li data-path="data/device_9000008322/2025-09.json">
+            <a href="data/device_9000008322/2025-09.json">data/device_9000008322/2025-09.json</a
+            ><span class="tag">monthly</span>
+          </li>
+          <li data-path="data/device_9000008322/2025-10.json">
+            <a href="data/device_9000008322/2025-10.json">data/device_9000008322/2025-10.json</a
+            ><span class="tag">monthly</span>
+          </li>
+          <li data-path="data/device_9000008322/2025-11.json">
+            <a href="data/device_9000008322/2025-11.json">data/device_9000008322/2025-11.json</a
+            ><span class="tag">monthly</span>
+          </li>
+          <li data-path="data/device_9000008322/2025-12.json">
+            <a href="data/device_9000008322/2025-12.json">data/device_9000008322/2025-12.json</a
+            ><span class="tag">monthly</span>
+          </li>
+          <li data-path="data/device_9000008322/daily/2025-09.json">
+            <a href="data/device_9000008322/daily/2025-09.json"
+              >data/device_9000008322/daily/2025-09.json</a
+            ><span class="tag">daily</span>
+          </li>
+          <li data-path="data/device_9000008322/daily/2025-10.json">
+            <a href="data/device_9000008322/daily/2025-10.json"
+              >data/device_9000008322/daily/2025-10.json</a
+            ><span class="tag">daily</span>
+          </li>
+          <li data-path="data/device_9000008322/daily/2025-11.json">
+            <a href="data/device_9000008322/daily/2025-11.json"
+              >data/device_9000008322/daily/2025-11.json</a
+            ><span class="tag">daily</span>
+          </li>
+          <li data-path="data/device_9000008322/daily/2025-12.json">
+            <a href="data/device_9000008322/daily/2025-12.json"
+              >data/device_9000008322/daily/2025-12.json</a
+            ><span class="tag">daily</span>
+          </li>
+        </ul>
+      </details>
+    </main>
+    <script>
+      const input = document.getElementById('filter');
+      const items = Array.from(document.querySelectorAll('[data-path]'));
+      const groups = Array.from(document.querySelectorAll('details'));
+
+      function applyFilter() {
+        const q = input.value.toLowerCase().trim();
+        items.forEach((item) => {
+          const match = !q || item.dataset.path.includes(q);
+          item.style.display = match ? '' : 'none';
+        });
+        groups.forEach((group) => {
+          const visible = Array.from(group.querySelectorAll('li')).some(
+            (li) => li.style.display !== 'none',
+          );
+          group.style.display = visible ? '' : 'none';
+        });
+      }
+
+      input.addEventListener('input', applyFilter);
+    </script>
+  </body>
+</html>

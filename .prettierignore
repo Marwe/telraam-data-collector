@@ -1,0 +1,8 @@
+# Outputs and generated files
+dist
+docs/data
+node_modules
+src/generated
+
+# Misc
+package-lock.json

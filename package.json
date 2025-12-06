@@ -1,0 +1,27 @@
+{
+  "name": "telraam-data-collector",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "npm run generate-types && tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts",
+    "collect": "npm run build && npm start",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "generate-types": "openapi-typescript api-spec/telraam-openapi.yaml -o src/generated/telraam-api.ts",
+    "generate-types:watch": "openapi-typescript api-spec/telraam-openapi.yaml -o src/generated/telraam-api.ts --watch"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "openapi-typescript": "^7.4.4",
+    "prettier": "^3.4.2",
+    "typescript": "~5.9.3",
+    "vite": "^7.2.4"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "openapi-typescript-fetch": "^2.0.0"
+  }
+}
