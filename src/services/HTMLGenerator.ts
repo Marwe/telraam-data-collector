@@ -487,37 +487,21 @@ export class HTMLGenerator {
     }
 
     function formatDate(date) {
-      const now = new Date();
       const timestamp = date.getTime();
 
       if (Number.isNaN(timestamp)) {
         return '-';
       }
 
-      if (timestamp > now.getTime()) {
-        return date.toLocaleDateString('en-US', {
-          month: 'short',
-          day: 'numeric',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit'
-        });
-      }
-
-      const diff = now.getTime() - timestamp;
-      const hours = Math.floor(diff / (1000 * 60 * 60));
-
-      if (hours < 1) return 'Just now';
-      if (hours < 24) return \`\${hours}h ago\`;
-
-      const days = Math.floor(hours / 24);
-      if (days < 7) return \`\${days}d ago\`;
-
-      return date.toLocaleDateString('en-US', {
+      return new Intl.DateTimeFormat('en-US', {
         month: 'short',
         day: 'numeric',
-        year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
-      });
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        timeZone: 'UTC',
+        timeZoneName: 'short'
+      }).format(date);
     }
 
     loadData();
