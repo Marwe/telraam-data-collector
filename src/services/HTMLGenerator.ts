@@ -493,15 +493,7 @@ export class HTMLGenerator {
         return '-';
       }
 
-      return new Intl.DateTimeFormat('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        timeZone: 'UTC',
-        timeZoneName: 'short'
-      }).format(date);
+      return date.toISOString();
     }
 
     loadData();
