@@ -68,6 +68,8 @@ export class DataCollector {
 
     const results: CollectionResult[] = [];
     const deviceMetadata: DeviceMetadata[] = [];
+    const existingMetadata = await this.storage.loadDeviceMetadata();
+    const previousMetadataById = new Map(existingMetadata.map((meta) => [meta.id, meta]));
 
     for (let i = 0; i < this.devices.length; i++) {
       const device = this.devices[i];
@@ -79,7 +81,10 @@ export class DataCollector {
         id: device.id,
         name: device.name,
         location: device.location,
-        lastUpdated: new Date().toISOString(),
+        lastUpdated:
+          result.lastUpdated ??
+          previousMetadataById.get(device.id)?.lastUpdated ??
+          new Date().toISOString(),
         totalDataPoints: result.dataPointsCollected,
       });
 
@@ -117,6 +122,7 @@ export class DataCollector {
     try {
       const dateRange = calculateDateRange(this.daysToFetch);
       const dataPoints = await this.client.fetchTrafficData(device.id, dateRange);
+      const lastDataTimestamp = this.getLatestDataTimestamp(dataPoints);
 
       if (dataPoints.length === 0) {
         logger.warn(`No data returned for device ${device.id}`);
@@ -124,6 +130,7 @@ export class DataCollector {
           deviceId: device.id,
           success: true,
           dataPointsCollected: 0,
+          lastUpdated: lastDataTimestamp,
         };
       }
 
@@ -134,6 +141,7 @@ export class DataCollector {
         deviceId: device.id,
         success: true,
         dataPointsCollected: totalPoints,
+        lastUpdated: lastDataTimestamp,
       };
     } catch (error) {
       const errorMessage = this.formatError(error);
@@ -214,6 +222,33 @@ export class DataCollector {
     // Log total data points collected
     const totalDataPoints = summary.results.reduce((sum, r) => sum + r.dataPointsCollected, 0);
     logger.info(`Total data points collected: ${totalDataPoints}`);
+  }
+
+  /**
+   * Determine the most recent data timestamp from a list of points
+   */
+  private getLatestDataTimestamp(dataPoints: TrafficDataPoint[]): string | undefined {
+    return dataPoints.reduce<string | undefined>((latest, point) => {
+      if (!point.date) {
+        return latest;
+      }
+
+      const pointDate = new Date(point.date);
+      if (Number.isNaN(pointDate.getTime())) {
+        return latest;
+      }
+
+      if (!latest) {
+        return point.date;
+      }
+
+      const latestDate = new Date(latest);
+      if (Number.isNaN(latestDate.getTime())) {
+        return point.date;
+      }
+
+      return pointDate > latestDate ? point.date : latest;
+    }, undefined);
   }
 
   /**

@@ -148,6 +148,8 @@ export interface CollectionResult {
   success: boolean;
   /** Number of data points collected */
   dataPointsCollected: number;
+  /** ISO timestamp of the most recent data point collected */
+  lastUpdated?: string;
   /** Error message if collection failed */
   error?: string;
 }

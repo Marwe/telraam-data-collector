@@ -27,7 +27,6 @@ export class HTMLGenerator {
   <div class="container">
     ${this.getHeader()}
     ${this.getStatsSection()}
-    ${this.getSearchBox()}
     <div id="devices" class="devices-grid"></div>
     ${this.getFooter()}
   </div>
@@ -228,29 +227,6 @@ export class HTMLGenerator {
       transform: scale(1.05);
     }
 
-    .search-box {
-      width: 100%;
-      max-width: 500px;
-      padding: 14px 20px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      color: var(--text);
-      font-size: 15px;
-      margin-bottom: 32px;
-      transition: all 0.2s ease;
-    }
-
-    .search-box:focus {
-      outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-    }
-
-    .search-box::placeholder {
-      color: var(--text-muted);
-    }
-
     footer {
       margin-top: 60px;
       padding-top: 24px;
@@ -267,10 +243,6 @@ export class HTMLGenerator {
 
     footer a:hover {
       text-decoration: underline;
-    }
-
-    .hidden {
-      display: none;
     }
 
     @media (max-width: 768px) {
@@ -312,20 +284,9 @@ export class HTMLGenerator {
       </div>
       <div class="stat">
         <div class="stat-label">Last Updated</div>
-        <div class="stat-value" id="lastUpdate" style="font-size: 16px;">-</div>
-      </div>
+      <div class="stat-value" id="lastUpdate" style="font-size: 16px;">-</div>
     </div>
-    `;
-  }
-
-  private getSearchBox(): string {
-    return `
-    <input
-      type="search"
-      id="search"
-      class="search-box"
-      placeholder="Search devices or filter by month (e.g., 2025-12)..."
-    />
+  </div>
     `;
   }
 
@@ -355,7 +316,6 @@ export class HTMLGenerator {
         const fileStructure = await buildFileStructure(devices);
         updateStats(devices, fileStructure);
         renderDevices(devices, fileStructure);
-        setupSearch();
 
       } catch (error) {
         console.error('Failed to load data:', error);
@@ -528,7 +488,23 @@ export class HTMLGenerator {
 
     function formatDate(date) {
       const now = new Date();
-      const diff = now - date;
+      const timestamp = date.getTime();
+
+      if (Number.isNaN(timestamp)) {
+        return '-';
+      }
+
+      if (timestamp > now.getTime()) {
+        return date.toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      }
+
+      const diff = now.getTime() - timestamp;
       const hours = Math.floor(diff / (1000 * 60 * 60));
 
       if (hours < 1) return 'Just now';
@@ -541,46 +517,6 @@ export class HTMLGenerator {
         month: 'short',
         day: 'numeric',
         year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
-      });
-    }
-
-    function setupSearch() {
-      const searchInput = document.getElementById('search');
-      const deviceCards = document.querySelectorAll('.device-card');
-
-      searchInput.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase().trim();
-
-        deviceCards.forEach(card => {
-          const deviceId = card.dataset.deviceId.toLowerCase();
-          const deviceName = card.dataset.deviceName;
-          const monthLinks = Array.from(card.querySelectorAll('[data-month]'));
-
-          if (!query) {
-            card.classList.remove('hidden');
-            monthLinks.forEach(link => link.parentElement.style.display = '');
-            return;
-          }
-
-          const deviceMatches = deviceId.includes(query) || deviceName.includes(query);
-
-          let hasVisibleMonths = false;
-          monthLinks.forEach(link => {
-            const month = link.dataset.month.toLowerCase();
-            if (month.includes(query)) {
-              link.parentElement.style.display = '';
-              hasVisibleMonths = true;
-            } else {
-              link.parentElement.style.display = 'none';
-            }
-          });
-
-          if (deviceMatches || hasVisibleMonths) {
-            card.classList.remove('hidden');
-          } else {
-            card.classList.add('hidden');
-          }
-        });
       });
     }
 
