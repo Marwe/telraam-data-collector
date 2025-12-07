@@ -18,6 +18,9 @@ dist-ssr
 # Generated files
 src/generated/
 
+# data files
+docs/data/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
